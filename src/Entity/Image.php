@@ -34,6 +34,7 @@ class Image
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="images")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $product;
 
