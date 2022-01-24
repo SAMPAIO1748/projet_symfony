@@ -76,9 +76,6 @@ class AdminImageController extends AbstractController
         return $this->render("admin/imageform.html.twig", ['imageForm' => $imageForm->createView()]);
     }
 
-    /**
-     * Route("admin/update/image/{id}", name="update_image")
-     */
     public function updateImage(
         $id,
         Request $request,

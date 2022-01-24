@@ -1,0 +1,14 @@
+{% extends "admin/base.html.twig" %}
+
+{% block main %}
+
+	<h2>{{ licence.name }}</h2>
+	<img src="{{ asset('images/' ~ licence.media) }}" alt="{{ licence.name }}">
+	{% for product in licence.products %}
+
+		<h2>{{ product.name }}</h2>
+		<img src="{{ asset('images/' ~ product.images[0].src ) }}" alt="{{ product.images[0].alt }}">
+
+	{% endfor %}
+
+{% endblock %}
