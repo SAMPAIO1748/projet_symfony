@@ -4,6 +4,7 @@ namespace App\Controller\Front;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,5 +63,67 @@ class UserController extends AbstractController
         }
 
         return $this->render("front/userform.html.twig", ['userForm' => $userForm->createView()]);
+    }
+
+    /**
+     * @Route("update/user", name="user_update")
+     */
+    public function userUpdate(
+        Request $request,
+        EntityManagerInterface $entityManagerInterface,
+        UserPasswordHasherInterface $userPasswordHasherInterface,
+        UserRepository $userRepository
+    ) {
+
+        $user_connect = $this->getUser();
+
+        $user_mail = $user_connect->getUserIdentifier();
+
+        $user = $userRepository->findOneBy(['email' => $user_mail]);
+
+        $userForm = $this->createForm(UserType::class, $user);
+
+        $userForm->handleRequest($request);
+
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $user->setRoles(["ROLE_USER"]);
+            $user->setDate(new \DateTime("NOW"));
+
+            $plainPassword = $userForm->get('password')->getData();
+            $hashedPassword = $userPasswordHasherInterface->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+
+            $user_mail = $userForm->get('email')->getData();
+            $user_name = $userForm->get('name')->getData();
+            $user_firstname = $userForm->get('firstname')->getData();
+
+            $entityManagerInterface->persist($user);
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('front_home');
+        }
+
+        return $this->render("front/userform.html.twig", ['userForm' => $userForm->createView()]);
+    }
+
+    /**
+     * @Route("delete/user", name="delete_user")
+     */
+    public function deleteUser(
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManagerInterface
+    ) {
+
+        $user_connect = $this->getUser();
+
+        $user_mail = $user_connect->getUserIdentifier();
+
+        $user = $userRepository->findOneBy(['email' => $user_mail]);
+
+        $entityManagerInterface->remove($user);
+
+        $entityManagerInterface->flush();
+
+        return $this->redirectToRoute('front_home');
     }
 }
