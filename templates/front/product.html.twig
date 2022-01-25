@@ -9,5 +9,32 @@
 	<h3>{{ product.category.name }}</h3>
 	<h3>{{ product.licence.name }}</h3>
 
+	<hr>
+	<h2>Commentaires</h2>
 
-{% endblock %}
+	{% if product.comments %}
+		{% for comment in product.comments %}
+			<h3>Par :
+				{{ comment.user.name }}
+				{{ comment.user.firstname }}</h3>
+			<h3>Le :
+				{{ comment.date | date('d/m/Y') }}</h3>
+			<p>{{ comment.content }}</p>
+			{% if app.user is same as(comment.user) %}
+
+				<a href="{{ path('comment_update', {'id' : comment.id } ) }}">Modifier votre commentaire</a>
+				<a href="{{ path('comment_delete', {'id' : comment.id } ) }}">Supprimer votre commentaire</a>
+
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+
+	{% if app.user %}
+
+		{{form(commentForm)}}
+
+			{% else %}
+				<h4>Vous devez être connecté pour commenter</h4>
+		{% endif %}
+
+	{% endblock %}

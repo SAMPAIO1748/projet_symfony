@@ -29,15 +29,15 @@
 			type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
 			{#
-																		        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-																		        See https://symfony.com/doc/current/security/remember_me.html
-																		
-																		        <div class="checkbox mb-3">
-																		            <label>
-																		                <input type="checkbox" name="_remember_me"> Remember me
-																		            </label>
-																		        </div>
-																		    #}
+																																	        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+																																	        See https://symfony.com/doc/current/security/remember_me.html
+																																	
+																																	        <div class="checkbox mb-3">
+																																	            <label>
+																																	                <input type="checkbox" name="_remember_me"> Remember me
+																																	            </label>
+																																	        </div>
+																																	    #}
 
 			<button class="btn btn-lg btn-primary" type="submit">
 				Sign in
@@ -61,6 +61,24 @@
 	{% if app.user is null %}
 
 		<a href="{{ path('user_insert') }}">Créer votre compte</a>
+
+	{% endif %}
+
+	{% if app.user %}
+		<hr>
+		<h2>Commentaires de
+			{{ app.user.firstname }}
+			{{ app.user.name }}</h2>
+		{% for comment in app.user.comments %}
+			<h4>Commentaires sur :
+				{{ comment.product.name }}</h4>
+			<h4>Le :
+				{{comment.date | date('d/m/Y')}}
+			</h4>
+			<p>{{ comment.content }}</p>
+			<a href="{{ path('comment_update', {'id' : comment.id } ) }}">Modifier votre commentaire</a>
+			<a href="{{ path('comment_delete', {'id' : comment.id } ) }}">Supprimer votre commentaire</a>
+		{% endfor %}
 
 	{% endif %}
 {% endblock %}
