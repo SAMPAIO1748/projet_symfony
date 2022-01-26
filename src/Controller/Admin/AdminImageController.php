@@ -65,6 +65,8 @@ class AdminImageController extends AbstractController
                     $this->getParameter('images_directory'),
                     $newFileName
                 );
+
+                $image->setSrc($newFileName);
             }
 
             $entityManagerInterface->persist($image);
@@ -106,7 +108,11 @@ class AdminImageController extends AbstractController
                     $this->getParameter('images_directory'),
                     $newFileName
                 );
+
+                $image->setSrc($newFileName);
             }
+
+
 
             $entityManagerInterface->persist($image);
             $entityManagerInterface->flush();
