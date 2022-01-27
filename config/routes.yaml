@@ -5,3 +5,7 @@
 update_image:
   path: admin/update/image/{id}
   controller: App\Controller\Admin\AdminImageController::updateImage
+
+command_create:
+  path: command/create
+  controller: App\Controller\Front\CommandController::commandCreate
