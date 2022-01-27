@@ -65,14 +65,27 @@ class Command
     private $price;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Product::class, inversedBy="commands")
+     * @ORM\OneToMany(targetEntity=Cart::class, mappedBy="command")
      */
-    private $products;
+    private $carts;
 
+    public function __construct()
+    {
+        $this->carts = new ArrayCollection();
+    }
+
+
+    ///**
+    // * @ORM\ManyToMany(targetEntity=Product::class, inversedBy="commands")
+    // */
+    //private $products;
+
+    /*
     public function __construct()
     {
         $this->products = new ArrayCollection();
     }
+    */
 
     public function getId(): ?int
     {
@@ -187,10 +200,11 @@ class Command
         return $this;
     }
 
-    /**
-     * @return Collection|Product[]
-     */
-    public function getProducts(): Collection
+
+    ///**
+    // * @return Collection|Product[]
+    // */
+    /*public function getProducts(): Collection
     {
         return $this->products;
     }
@@ -207,6 +221,36 @@ class Command
     public function removeProduct(Product $product): self
     {
         $this->products->removeElement($product);
+
+        return $this;
+    }*/
+
+    /**
+     * @return Collection|Cart[]
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts[] = $cart;
+            $cart->setCommand($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getCommand() === $this) {
+                $cart->setCommand(null);
+            }
+        }
 
         return $this;
     }
